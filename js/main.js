@@ -1,491 +1,322 @@
-{
-	function debounce(func, wait, immediate) {
-		var timeout;
-		return function() {
-			var context = this, args = arguments;
-			var later = function() {
-				timeout = null;
-				if (!immediate) func.apply(context, args);
-			};
-			var callNow = immediate && !timeout;
-			clearTimeout(timeout);
-			timeout = setTimeout(later, wait);
-			if (callNow) func.apply(context, args);
-		};
-	};
+/*
+* @Author: Marte
+* @Date:   2018-06-07 11:33:08
+* @Last Modified by:   Marte
+* @Last Modified time: 2018-06-11 15:41:20
+*/
 
-	let win = {width: window.innerWidth, height: window.innerHeight};
-	
-	const settings = {
-		image: {duration: 900, delay: 0, easing: [0.8,0,0.2,1]},
-		more: {duration: 900, delay: 0, easing: [0.8,0,0.2,1]},
-		facts: {duration: 300, delay: 0, easing: [0.8,0,0.2,1]},
-		title: {duration: 700, delay: 200, easing: [0.8,0,0.2,1]},
-		description: {duration: 900, delay: 400, easing: 'easeOutExpo'},
-		pagination: {duration: 300, delay: 400, easing: 'easeInOutQuad'},
+'use strict';
 
-		menuCtrl: {duration: 300, easing: [0.2,1,0.3,1]},
-		menuItems: {duration: 300, easing: [0.2,1,0.3,1]},
-		factsCtrl: {duration: 300, easing: 'linear'},
-		gallery: {duration: 800, easing: [0.2,1,0.3,1]},
-		navigationCtrls: {duration: 800, easing: [0.8,0,0.2,1]},
-		previewCloseCtrl: {duration: 300, easing: 'easeOutExpo'},
-		factsItems: {duration: 800, easing: [0.8,0,0.2,1]},
-		expander: {duration: 800, easing: [0.8,0,0.2,1]}
-	};
-	
-	class Entry {
-        constructor(el) {
-            this.DOM = {el: el};
-            this.init();
-        }
-        init() {
-			// DOM elements:
-			// title
-			this.DOM.title = this.DOM.el.querySelector('.section__content > .section__title');
-			charming(this.DOM.title);
-			this.DOM.titleLetters = this.DOM.title.querySelectorAll('span');
-			// description
-			this.DOM.description = this.DOM.el.querySelector('.section__content > .section__description');
-			// image
-			this.DOM.image = this.DOM.el.querySelector('.section__img > .section__img-inner');
-			// more box
-			this.DOM.more = this.DOM.el.querySelector('.section__more > .section__more-inner');
-			// expander
-			this.DOM.expander = this.DOM.el.querySelector('.section__expander');
-			// facts
-			this.DOM.facts = {
-				wrapper: this.DOM.el.querySelector('.section__facts'),
-				items: Array.from(this.DOM.el.querySelectorAll('.section__facts > .section__facts-item'))
-			};
-		}
-		show(direction) {
-			this.isHidden = false;
-			return this.toggle(direction);
-		}
-		hide(direction) {
-			this.isHidden = true;
-			return this.toggle(direction);
-		}
-		toggle(direction) {
-			this.direction = direction; 
-			return Promise.all([this.toggleTitle(), 
-								this.toggleDescription(),
-								this.toggleImage(),
-								this.toggleMore(),
-								this.toggleFacts()]);
-		}
-		toggleTitle() {
-			anime.remove(this.DOM.titleLetters);
-			return anime({
-				targets: this.DOM.titleLetters,
-				duration: settings.title.duration,
-				delay: (target, index) => index * 30 + settings.title.delay,
-				easing: settings.title.easing,
-				translateY: this.isHidden ? [0,this.direction === 'next' ? '-100%' : '100%'] : [this.direction === 'next' ? '100%' : '-100%', 0],
-				opacity: {
-					value: this.isHidden ? 0 : 1,
-					duration: 1,
-					delay: (target, index) => this.isHidden ? settings.title.duration + settings.title.delay : settings.title.delay
-				}
-			}).finished;
-		}
-		toggleDescription() {
-			anime.remove(this.DOM.description);
-			return anime({
-				targets: this.DOM.description,
-				duration: settings.description.duration,
-				delay: !this.isHidden ? settings.description.duration * 0.5 + settings.description.delay : settings.description.delay,
-				easing: settings.description.easing,
-				translateY: this.isHidden ? [0, this.direction === 'next' ? '-10%' : '10%'] : [this.direction === 'next' ? '20%' : '-20%', 0],
-				opacity: this.isHidden ? 0 : 1
-			}).finished;
-		}
-		toggleImage() {
-			this.DOM.image.style.transformOrigin = !this.isHidden ? `50% ${this.direction === 'next' ? 0 : 100}%` : `50% 50%`;
+         window.onload = function(){
+            myGame.init();
+         }
 
-			anime.remove(this.DOM.image);
-			return anime({
-				targets: this.DOM.image,
-				duration: settings.image.duration,
-				delay: settings.image.delay,
-				easing: settings.image.easing,
-				translateY: this.isHidden ? ['0%',this.direction === 'next' ? '-100%' : '100%'] : [this.direction === 'next' ? '100%' : '-100%','0%'],
-				scale: !this.isHidden ? [1.8,1] : 1,
-				opacity: {
-					value: this.isHidden ? 0 : 1,
-					duration: 1,
-					delay: this.isHidden ? settings.image.duration + settings.image.delay : settings.image.delay
-				}
-			}).finished;
-		}
-		toggleMore() {
-			anime.remove(this.DOM.more);
-			return anime({
-				targets: [this.DOM.more, this.DOM.more.children],
-				duration: settings.more.duration,
-				delay: settings.more.delay,
-				easing: settings.more.easing,
-				translateY: this.isHidden ? ['0%',this.direction === 'next' ? '-100%' : '100%'] : [this.direction === 'next' ? '100%' : '-100%','0%'],
-				opacity: {
-					value: this.isHidden ? 0 : 1,
-					duration: (target, index) => index ? settings.more.duration/3 : 1,
-					delay: (target, index) => index ? 
-												this.isHidden ? 100 : settings.more.duration * 0.5 + settings.more.delay :
-												this.isHidden ? settings.more.duration + settings.more.delay : settings.more.delay
-				}
-			}).finished;
-		}
-		toggleFacts() {
-			anime.remove(this.DOM.facts.items);
-			return anime({
-				targets: this.DOM.facts.items.slice(0, 2),
-				duration: settings.facts.duration,
-				delay: (target, index) => {
-					return !this.isHidden ? index * 40 + settings.facts.duration * 0.5 + settings.facts.delay : index * 40 + settings.facts.delay;
-				},
-				easing: settings.facts.easing,
-				translateY: this.isHidden ? [this.DOM.facts.ty, this.direction === 'next' ? this.DOM.facts.ty-20 : this.DOM.facts.ty+20] : [this.direction === 'next' ? this.DOM.facts.ty+20 : this.DOM.facts.ty-20, this.DOM.facts.ty],
-				opacity: this.isHidden ? 0 : 1
-			}).finished;
-		}
-    };
+         var myGame = {
 
-    class Slideshow {
-        constructor(el) {
-            this.DOM = {};
-            this.DOM.el = el;
-            this.init();
-        }
-        init() {
-			// DOM elements.
-			this.DOM.menuCtrl = this.DOM.el.querySelector('.sections__header > button.button-menu');
-			this.DOM.menu = {
-				wrapper: this.DOM.el.querySelector('.menu'),
-				items: Array.from(this.DOM.el.querySelectorAll('.menu > .menu__inner > .menu__item')),
-				menuCtrls: {
-					toggle: this.DOM.el.querySelector('.menu > .menu__toggle'),
-					open: this.DOM.el.querySelector('.menu > .menu__toggle > .menu__toggle-inner--open'),
-					close: this.DOM.el.querySelector('.menu > .menu__toggle > .menu__toggle-inner--close')
-				}
-			};
-			this.DOM.factsContainer = this.DOM.el.querySelector('.facts');
-			this.DOM.factsCtrls = {
-				toggle: this.DOM.factsContainer.querySelector('.facts__toggle'),
-				more: this.DOM.factsContainer.querySelector('.facts__toggle > .facts__toggle-inner--more'),
-				less: this.DOM.factsContainer.querySelector('.facts__toggle > .facts__toggle-inner--less'),
-			};
-			this.DOM.previewCloseCtrl = this.DOM.factsContainer.querySelector('.button-contentclose');
-			this.DOM.pagination = this.DOM.el.querySelector('.sections__index .sections__index-inner');
-			this.DOM.navigation = this.DOM.el.querySelector('.sections__nav');
-			this.DOM.navigation.prevCtrl = this.DOM.navigation.querySelector('button.sections__nav-item--prev');
-			this.DOM.navigation.nextCtrl = this.DOM.navigation.querySelector('button.sections__nav-item--next');
-			this.DOM.entries = Array.from(this.DOM.el.querySelectorAll('.section'), entry => new Entry(entry));
-			this.entriesTotal = this.DOM.entries.length;
-			this.currentPos = 0;
+            data : {  //飞机数据
 
-			this.layout();
-			// Init/Bind events.
-			this.initEvents();
-		}
-		layout() {
-			this.currentEntry = this.DOM.entries[this.currentPos];
-			const factEl = this.currentEntry.DOM.facts.items[0];
-			const factHeight = factEl.getBoundingClientRect().height + parseFloat(window.getComputedStyle(factEl).marginBottom);
-			const paddingFactsStyle = window.getComputedStyle(this.currentEntry.DOM.facts.wrapper);
-			const paddingFacts = parseFloat(paddingFactsStyle.paddingTop) + parseFloat(paddingFactsStyle.paddingBottom);
-			
-			this.factsTranslation = win.height - 2 * factHeight - paddingFacts;
-			for ( let i = 0; i <= this.entriesTotal - 1; ++i ) {
-				const entry = this.DOM.entries[i];
-				entry.DOM.expander.style.transform = `scale3d(0.54,1,1) translate3d(0px,${this.factsTranslation}px,0px)`;
-				for ( let j = 0, len = entry.DOM.facts.items.length; j <= len - 1; ++j ) {
-					entry.DOM.facts.ty = this.factsTranslation;
-					const item = entry.DOM.facts.items[j];
-					item.style.transform = `translate3d(0px,${this.factsTranslation}px,0px)`;
-					if ( j > 1 ) {
-						item.style.opacity = 0;
-					}
-					else if ( i === this.currentPos ){
-						item.style.opacity = 1;
-					}
-				}
-			}
-		}
-		initEvents() {
-			// Navigation
-			this.onPrevClick = () => this.navigate('prev');
-			this.onNextClick = () => this.navigate('next');
-			this.DOM.navigation.prevCtrl.addEventListener('click', this.onPrevClick);
-			this.DOM.navigation.nextCtrl.addEventListener('click', this.onNextClick);
-			
-			// Main menu
-			this.DOM.menu.menuCtrls.toggle.addEventListener('click', () => this.toggleMenu());
-			
-			// Facts Container
-			this.DOM.factsCtrls.toggle.addEventListener('click', () => this.toggleFactsContainer());
-			
-			// Facts (clickable facts)
-			for ( let i = 0; i <= this.entriesTotal - 1; ++i ) {
-				const entry = this.DOM.entries[i];
-				entry.DOM.facts.items
-					 .filter(fact => fact.classList.contains('section__facts-item--clickable'))
-					 .forEach(clickableFact => clickableFact.addEventListener('click', () => this.preview(clickableFact.dataset.gallery)));
-			}
-			
-			// Close preview
-			this.DOM.previewCloseCtrl.addEventListener('click', () => this.closePreview());
-			
-			// Window resize
-			this.onResize = () => {
-				win = {width: window.innerWidth, height: window.innerHeight};
-				this.layout();
-				if ( this.isFactsOpen ) {
-					// Toggle the factsCtrls state
-					this.DOM.factsCtrls.more.style.opacity = 1;
-					this.DOM.factsCtrls.less.style.opacity = 0;
-					this.isFactsOpen = !this.isFactsOpen;
-					this.toggleNavigationCtrls({opacity: 1, duration: 1});
-					this.isFactsAnimating = false;
-				}
-				if ( this.gallery ) {
-					this.DOM.previewCloseCtrl.style.opacity = 0;
-					this.toggleGallery(this.gallery, {duration: 1,opacity: 0}).then(() => this.gallery = null);
-				}
-				this.DOM.el.classList.remove('sections--factsopen');
-			};
-			window.addEventListener('resize', debounce(() => this.onResize(), 20));
-		}
-		navigate(direction) {
-			if ( this.isEntriesAnimating || this.isFactsAnimating ) return;
-			this.isEntriesAnimating = true;
-			// Store direction
-			this.direction = direction;
-			// Update currentPos
-			const newPos = this.currentPos = this.direction === 'next' ? 
-				this.currentPos < this.entriesTotal - 1 ? this.currentPos + 1 : 0 : 
-				this.currentPos = this.currentPos > 0 ? this.currentPos - 1 : this.entriesTotal - 1;
+                BULLET : {
+                    p:{name:'b1',speed:30},
+                    e:{name:'b2',speed:30}
+                },
 
-			const newEntry = this.DOM.entries[newPos];
+                PLANE : {},
 
-			this.update(newEntry);
-		}
-		update(newEntry) {
-			const updateFn = () => {
-				// hide the current entry and show the next/previous one.
-				// when both updatePageNumber, hide and show are finished:
-				Promise.all([this.currentEntry.hide(this.direction), newEntry.show(this.direction), this.updatePageNumber()]).then(() => {
-					this.currentEntry.DOM.el.classList.remove('section--current');
-					newEntry.DOM.el.classList.add('section--current');
-					this.currentEntry = newEntry;
-					this.isEntriesAnimating = false;
-				});
-			};
+                eArr : [2,1,1,3,3,1,1,3,3,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,1,2,0,0,0,0,
+                        3,3,2,3,3,1,1,3,3,2],
 
-			if ( this.isFactsOpen ) {
-				this.toggleFactsContainer().then(updateFn);
-			}
-			else {
-				updateFn();
-			}
-		}
-		updatePageNumber() {
-			anime.remove(this.DOM.pagination);
-			let halfway = false;
-			return anime({
-				targets: this.DOM.pagination,
-				duration: settings.pagination.duration,
-				easing: 'easeInOutQuad',
-				translateY: [
-					{value: this.direction === 'next' ? '-100%' : '100%', delay: settings.pagination.delay},
-					{value: [this.direction === 'next' ? '100%' : '-100%','0%'], delay: settings.pagination.duration}
-				],
-				opacity: [
-					{value: 0, delay: settings.pagination.delay},
-					{value: [0,1], delay: settings.pagination.duration}
-				],
-				update: (anime) => {
-					if ( anime.progress >= 50 && !halfway ) {
-						halfway = true;
-						this.DOM.pagination.innerHTML = `0${this.currentPos + 1}`;
-					}
-				}
-			}).finished;
-		}
-		toggleMenu() {
-			if ( this.isMenuAnimating ) return;
-			this.isMenuAnimating = true;
+                ENEMY : {
 
-			const toggleMenuCtrlFn = () => {
-				anime.remove([this.DOM.menu.menuCtrls.open, this.DOM.menu.menuCtrls.close]);
-				return anime({
-					targets: [this.DOM.menu.menuCtrls.open, this.DOM.menu.menuCtrls.close],
-					duration: settings.menuCtrl.duration,
-					easing: settings.menuCtrl.easing,
-					opacity: (target, index) => index ? !this.isMenuOpen ? 1 : 0 : !this.isMenuOpen ? 0 : 1,
-					translateX: (target, index) => index ? !this.isMenuOpen ? ['50%', '0%'] : '50%' : !this.isMenuOpen ? ['0%', '-50%'] : '0%'
-				}).finished;
-			};
+                    blood : [2,20,50,10],
+                    score : [2,20,50,10],
+                    speed : [1,3,1,2],
+                    bullet : [false,false,false,true],
+                    _width : [126,108,126,120],
+                    _height : [81,81,87,101]
 
-			const toggleMenuItemsFn = () => {
-				anime.remove(this.DOM.menu.items);
-				return anime({
-					targets: this.DOM.menu.items,
-					duration: settings.menuItems.duration,
-					easing: settings.menuItems.easing,
-					delay: (target, index) => !this.isMenuOpen ? index * 80 : 0,
-					translateX: !this.isMenuOpen ? ['5%', '0%'] : '0%',
-					opacity: {
-						value: !this.isMenuOpen ? [0,1] : 0,
-						easing: 'linear',
-						delay: (target, index, total) => !this.isMenuOpen ? index * 80 : 0
-					}
-				}).finished;
-			};
+                }
 
-			this.DOM.menu.wrapper.classList.toggle('menu--open');
+            },
 
-			Promise.all([toggleMenuCtrlFn(), toggleMenuItemsFn()]).then(() => {
-				this.isMenuOpen = !this.isMenuOpen
-				this.isMenuAnimating = false;
-			});
-		}
-		toggleFactsContainer() {
-			if ( this.isFactsAnimating || this.isEntriesAnimating && !this.isFactsOpen ) {
-				return;
-			};
-			this.isFactsAnimating = true;
-			return Promise.all([this.toggleFactsCtrl(), this.animateExpander(), this.animateFactsItems()]).then(() => {
-				this.isFactsOpen = !this.isFactsOpen;
-				this.isFactsAnimating = false;
-			});
-		}
-		preview(gallery) {
-			if ( this.isFactsAnimating || !gallery ) return;
-			this.isFactsAnimating = true;
+            init : function(){ //初始化
 
-			this.gallery = gallery;
-			this.DOM.el.classList.add('sections--factsopen');
-			Promise.all([
-				this.toggleNavigationCtrls({
-					opacity: 0
-				}),
-				this.toggleFactsCtrl({
-					delay: 0,
-					opacity: 0
-				}),
-				this.animateExpander({
-					translateY: 0,
-					scaleX: 1.05
-				}),
-				this.animateFactsItems({
-					translateY: 0,
-					opacity: 0,
-					delay: 0
-				}),
-				this.togglePreviewCloseCtrl({
-					opacity: 1,
-					delay: 800
-				}),
-				this.toggleGallery(gallery, {
-					opacity: 1,
-					scale: (target, index) => index ? [0.7,1] : [1,1], // just the images..
-					delay: (target, index) => index ? index * 100 + 700 : 700 // just the images..
-				})
-			]).then(() => this.isFactsAnimating = false);
-		}
-		closePreview() {
-			if ( this.isFactsAnimating ) return;
-			this.isFactsAnimating = true;
+                var layout = document.getElementById('layout'),
+                    mystart = document.getElementById('start'),
+                    score = document.getElementById('score'),
+                    That = this;
 
-			Promise.all([
-				this.toggleNavigationCtrls({
-					opacity: 1
-				}),
-				this.toggleFactsCtrl({
-					delay: 600,
-					opacity: (target, index) => index,
-				}),
-				this.animateExpander({
-					translateY: 0,
-					scaleX: 0.54
-				}),
-				this.animateFactsItems({
-					translateY: 0,
-					opacity: 1,
-					delay: 200
-				}),
-				this.togglePreviewCloseCtrl({
-					opacity: 0
-				}),
-				this.toggleGallery(this.gallery, {
-					opacity: 0
-				})
-			]).then(() => {
-				this.isFactsAnimating = false;
-				this.gallery = null;
-				this.DOM.el.classList.remove('sections--factsopen');
-			});
-		}
-		animateExpander(animeconfig) {
-			return this.animate(Object.assign({
-				targets: this.currentEntry.DOM.expander,
-				duration: settings.expander.duration,
-				easing: settings.expander.easing,
-				delay: !this.isFactsOpen ? 0 : 300,
-				translateY: !this.isFactsOpen ? [this.factsTranslation, 0] : this.factsTranslation,
-				scaleX: [0.54,0.54]
-			}, animeconfig));
-		}
-		animateFactsItems(animeconfig) {
-			return this.animate(Object.assign({
-				targets: this.currentEntry.DOM.facts.items,
-				duration: settings.factsItems.duration,
-				easing: settings.factsItems.easing,
-				delay: (target, index, total) => !this.isFactsOpen ? (index+1) * 30 + 150 : (total-index-1) * 30,
-				translateY: !this.isFactsOpen ? [this.factsTranslation,0] : this.factsTranslation,
-				opacity: (target, index) => !this.isFactsOpen ? 1 : index > 1 ? 0 : 1
-			}, animeconfig));
-		}
-		toggleFactsCtrl(animeconfig) {
-			return this.animate(Object.assign({
-				targets: [this.DOM.factsCtrls.more, this.DOM.factsCtrls.less],
-				duration: settings.factsCtrl.duration,
-				easing: settings.factsCtrl.easing,
-				opacity: (target, index) => index ? !this.isFactsOpen ? 1 : 0 : !this.isFactsOpen ? 0 : 1
-			}, animeconfig));
-		}
-		togglePreviewCloseCtrl(animeconfig) {
-			return this.animate(Object.assign({
-				targets: this.DOM.previewCloseCtrl,
-				duration: settings.previewCloseCtrl.duration,
-				easing: settings.previewCloseCtrl.easing
-			}, animeconfig));
-		}
-		toggleNavigationCtrls(animeconfig) {
-			return this.animate(Object.assign({
-				targets: [this.DOM.navigation.prevCtrl, this.DOM.navigation.nextCtrl],
-				duration: settings.navigationCtrls.duration,
-				easing: settings.navigationCtrls.easing
-			}, animeconfig));
-		}
-		toggleGallery(gallery, animeconfig) {
-			return this.animate(Object.assign({
-				targets: this.DOM.el.querySelectorAll(`#${gallery} > .section__gallery-item`),
-				duration: settings.gallery.duration,
-				easing: settings.gallery.easing
-			}, animeconfig));
-		}
-		animate(opts) {
-			anime.remove(opts.targets);
-			return anime(opts).finished;
-		}
-	};
+                this.layout = layout;
+                this.mystart = mystart;
+                this.score = score;
 
-	// Preload all the images in the page..
-	imagesLoaded(document.querySelectorAll('img'), () => {
-		document.body.classList.remove('loading');
-		// Init
-		new Slideshow(document.querySelector('.sections'));
-	});
-};
+                document.getElementById('startBtn').onclick = function() {
+                    mystart.style.display = 'none';
+                    That.createPlane();
+                    document.getElementsByClassName('score')[0].style.display = 'block';
+                    document.getElementById("fire").play();
+
+                };
+
+            },
+
+            createPlane : function(){  //创建飞机
+
+                var That = this;
+
+                var plane = document.createElement('div');
+                plane.className = 'plane';
+                plane.style.width = '110px';
+                plane.style.left = (this.layout.offsetWidth - plane.offsetWidth) / 2 + 'px';
+                this.layout.append( plane );
+
+                this.plane = plane;
+
+                plane.itimer1 = setInterval(function(){
+                    That.createBullet(That.data.BULLET.p.name,plane, 0, 1);
+                },150);
+
+                this.bindPlane(plane);
+
+                plane.itimer2 = setInterval(function(){
+                    That.createEnemy();
+                },1000)
+            },
+
+            createEnemy : function(){   //创建敌机
+
+                var e = this.data.eArr[~~(Math.random()*60)];
+
+                var ey = document.createElement('div');
+                ey.className = 'enemy enemy' + e;
+
+                ey.style.cssText = 'width:' + this.data.ENEMY._width[e] + 'px; height:' + this.data.ENEMY._height[e] + 'px';
+
+                ey.style.left = ~~(Math.random()*(this.layout.offsetWidth - this.data.ENEMY._width[e])) + 'px';
+                ey.setAttribute('blood', this.data.ENEMY.blood[e]);
+                ey.setAttribute('score', this.data.ENEMY.score[e]);
+                ey.setAttribute('speed', this.data.ENEMY.speed[e]);
+                ey.setAttribute('bullet', this.data.ENEMY.bullet[e]);
+
+                this.layout.append(ey);
+
+                //子弹碰撞
+                if(this.data.ENEMY.bullet[e]){
+                    var That = this;
+                    ey.timer1  = setInterval(function(){
+                        That.createBullet(That.data.BULLET.e.name,ey, ey.offsetHeight, -1);
+                    },2000);
+
+                }
+
+                this.runEnemy(ey);
+            },
+
+            runEnemy : function(obj){   //敌机运动
+                var That = this;
+                obj.timer = setInterval(function(){
+
+                    obj.style.top = (obj.offsetTop + parseInt(obj.getAttribute('speed'))) + 'px';
+
+                    if(obj.offsetTop > That.layout.offsetHeight){
+                        clearInterval(obj.timer);
+                        obj.parentNode.removeChild(obj);
+                    };
+
+                    for(var i = 0, e = document.getElementsByClassName('enemy') ,len = e.length; i<len; i++){
+                        if(That.TC(e[i],That.plane) ){  //与敌机碰撞]
+
+                            clearInterval(obj.timer);
+                            That.gameOver();
+                            That.plane.parentNode.removeChild(That.plane);
+                            That.plane = null;
+                            e[i].parentNode.removeChild(e);
+
+                        }
+                    }
+
+                },30)
+            },
+
+            createBullet : function(name, obj, h, direction){  //创建子弹
+
+                var bt = document.createElement('div');
+                bt.className = name;
+
+                var _p = obj;
+
+                bt.style.top = (_p.offsetTop + h - bt.offsetHeight * direction) - 10 + 'px';
+                bt.style.left = (_p.offsetLeft + _p.offsetWidth/2) - 4 + 'px';
+
+                this.layout.append(bt);
+
+                if(bt.classList.contains('b1')){
+                   this.runBullet(bt,0,-30);
+                }else{
+
+                    this.speedDecomposition(this.plane,bt);
+                    this.runBullet(bt,this.vx,this.vy);
+
+                }
+            },
+
+            speedDecomposition : function(pl,bt){   //计算敌机子弹方向，击向飞机
+
+                var plleft = pl.offsetLeft,
+                    pltop = pl.offsetTop,
+                    btleft = bt.offsetLeft,
+                    bttop = bt.offsetTop,
+
+                    s = Math.sqrt((plleft - btleft)*(plleft - btleft) + (pltop - bttop)*(pltop - bttop)),
+                    sin = (pltop - bttop) / s,
+                    vy = 5*sin,
+                    vx = Math.sqrt(5*5 - vy * vy);
+
+                this.vy = vy;
+                plleft > btleft ? this.vx = vx : this.vx = -vx;
+
+            },
+
+            runBullet : function(b,x,y){   //子弹运动
+
+                var That = this;
+
+                b.timer = setInterval(function(){
+
+                    if(b.offsetTop <= 30 || b.offsetTop >= That.layout.offsetHeight || b.offsetLeft <= 0 || b.offsetLeft >= That.layout.offsetWidth){   //边界判断
+
+                        clearInterval(b.timer);
+                        That.layout.removeChild(b);
+
+                    }else{
+
+                       b.style.cssText = 'top : ' + (b.offsetTop + y) + 'px; left : ' + (b.offsetLeft + x) + 'px';
+
+                    }
+
+                    for(var i = 0, EN = document.getElementsByClassName('enemy'), len = EN.length ; i < len ; i++ ){
+
+                        if(That.TC(EN[i],b) && b.classList.contains('b1')){
+
+                            clearInterval(b.timer);
+                            That.layout.removeChild(b);
+                            var Blood = EN[i].getAttribute('blood') - 1;
+
+                            if(Blood){
+                                EN[i].setAttribute('blood',Blood);
+                            }else{
+
+                                document.getElementById("boom").play();
+                                That.score.innerHTML = (parseInt(That.score.innerHTML) + parseInt(EN[i].getAttribute('score')));
+                                EN[i].style.background = 'url(img/qw.png) center no-repeat / cover';
+                                var pare = EN[i];
+                                EN[i].classList.remove("enemy");
+                                EN[i].timer = setTimeout(function(){That.layout.removeChild(pare)},400);
+                            }
+
+                        }
+
+                    }
+
+                    if(That.TC(That.plane,b) && b.classList.contains('b2')){
+
+                        clearInterval(b.timer);
+                        That.layout.removeChild(b);
+                        That.layout.removeChild(That.plane);
+                        That.gameOver();
+
+                    }
+
+                },30)
+            },
+
+            bindPlane : function(p){   //控制飞机鼠标事件
+
+                var lagoutx = this.layout.offsetLeft,
+                    lagouty = this.layout.offsetTop,
+
+                    lagoutw = this.layout.offsetWidth,
+                    lagouth = this.layout.offsetHeight;
+
+                p.onmousedown = function(event){
+
+                    var px = p.offsetLeft,
+                        py = p.offsetTop,
+
+                        dx = event.clientX - lagoutx - p.offsetWidth/2,
+                        dy = event.clientY - lagouty - p.offsetHeight/2;
+
+                    document.onmousemove = function(event){
+
+                        dx = event.clientX - lagoutx - p.offsetWidth / 2;
+                        dy = event.clientY - lagouty - p.offsetHeight / 2;
+
+                        if( dx <= 0 ){
+                            dx = 0 ;
+                        }else if( dx >= lagoutw - p.offsetWidth){
+                            dx = lagoutw - p.offsetWidth;
+                        }
+
+                        if( dy <= 0 ){
+                            dy = 0;
+                        }else if( dy >= lagouth - p.offsetHeight){
+                            dy =  lagouth - p.offsetHeight;
+                        }
+
+                        p.style.cssText = 'left :' + dx +'px; top :' + dy + 'px';
+
+                    }
+
+                    document.onmouseup = function(event){
+
+                        document.onmousemove = null;
+
+                    }
+
+                }
+            },
+
+            gameOver : function(){
+
+                document.getElementById("fire").pause();
+                document.getElementById('bigboom').play();
+
+                clearInterval(this.plane.itimer2);
+                clearInterval(this.plane.itimer1);
+
+                this.mystart.style.display = 'block';
+                document.getElementsByClassName('score')[0].style.display = 'none';
+                document.getElementById('name-over').getElementsByTagName('i')[0].innerHTML = 'GAME OVER!';
+                document.getElementById('name-over').getElementsByTagName('p')[0].innerHTML = this.score.innerHTML;
+                document.getElementById('startBtn').value = 'AGAIN';
+
+                while(this.layout.hasChildNodes()){
+                    this.layout.removeChild(this.layout.firstChild);
+                };
+
+                this.score.innerHTML = '0';
+
+            },
+
+            TC : function(obj1,obj2){   //碰撞检测
+
+                var t1 = obj1.offsetTop,                      //上
+                    r1 = obj1.offsetLeft + obj1.offsetWidth,  //右
+                    b1 = obj1.offsetTop + obj1.offsetHeight,  //下
+                    l1 = obj1.offsetLeft,                     //左
+
+                    t2 = obj2.offsetTop,                      //上
+                    r2 = obj2.offsetLeft + obj2.offsetWidth,  //右
+                    b2 = obj2.offsetTop + obj2.offsetHeight,  //下
+                    l2 = obj2.offsetLeft;                     //左
+
+                if(t1 > b2 || b1 < t2 || r1 < l2 || l1 > r2){
+                    return false;
+                }else{
+                    return true;
+                }
+            },
+         }
