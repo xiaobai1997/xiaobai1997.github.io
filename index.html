@@ -1,205 +1,257 @@
+
+<%Response.Charset = "utf-8"%>
+<!--#include file="conn.asp"-->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name=viewport content="width=device-width, initial-scale=1">
-<title>MLV5飞机大战网页版小游戏 </title>
+<!-- saved from url=(0020)http://www.qt86.com/ -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>装逼在线生成器</title>
+    <meta name="keywords" content="提豪车生成,楼宇表白生成,举牌生成,房产证生成,豪车订单生成,爱装逼协会">
+    <meta name="description" content="在线免费生成各种装逼图片,举牌生成,装逼神器,爱装逼协会">
+ 	<link href="./img/bootstrap.min.css" rel="stylesheet">
+	<link type="text/css" rel="stylesheet" href="./img/style.css"> 
+	<script src="./img/jquery-1.12.0.min.js"></script>
+	<script src="./img/bootstrap.min.js"></script>
 
-<style type="text/css" media="screen">
-	*{
-		margin: 0;
-		padding: 0;
-	}
-	img{
-		border:0;
-	}
-	ol, ul ,li{list-style: none;}
+<!--顶部-->
+<body id="index">
+<nav class="navbar qt86-navbar navbar-default"><!--default、inverse navbar-fixed-top-->
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+﻿          <a class="navbar-brand" title="爱装逼协会" href="<%=url%>">
+        <img alt="爱装逼协会" src="http://zp.wx16.com/img/logo.png" height="30">
+      </a>
+    </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+      	<li><a href="<%=url%>">装逼集合</a></li>
+      	<li><a href="<%=url%>/info.asp?id=16">楼宇表白</a></li>
+        <li><a href="<%=jcw%>"target="_blank">推荐一个免费分享资源的网站</a></li>
+        <li><a href="<%=jlq%>"target="_blank">官方交流群</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">其它生成<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="<%=jcw%>" target="_blank">暂无</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+	<div class="container-fluid">
+		<div class="container">
+												
+			<span class="thumbnail"><a href="<%=gg1url%>" target="_blank"><img src="<%=gg1img%>" width="1170" height="60" alt="" /></a></span>
+			
 
 
-		html,body{
-			/* background: url('img/bj.jpg'); */
-			height:100%;
-			-moz-user-select: none;
-			-webkit-user-select: none;
-			-ms-user-select: none;
-			-khtml-user-select: none;
-			user-select: none;
-			font-family:sans-serif;
-		}
-	  .layout{
-			width:100%;
-			height:100%;
-			margin: 0 auto;
-			background: url('img/bj.jpg') center bottom /100% auto;
-			/* background:#505149; */
-			position: relative;
-			overflow: hidden;
-			animation:movebg 3000s linear infinite;
-			-moz-animation:movebg 3000s linear infinite; /* Firefox */
-			-webkit-animation:movebg 3000s linear infinite; /* Safari and Chrome */
-			-o-animation:movebg 3000s linear infinite; /* Opera */
+			<div class="panel panel-default">
+  <div class="panel-heading">欢迎来访-爱装逼协会 记得收藏网址哦！不定时更新</div>
+  <div class="panel-body">
 
-		}
-		.plane{
-			width:110px;
-			height:90px;
-			/* background:#fff; */
-			background:url('img/P.png') 0 -101px no-repeat;
-			position: absolute;
-			bottom:0;
-			left:50%;
-			cursor:pointer;
-		}
-		.b1{
-			width:5px;
-			height:15px;
-			border-radius:50% 50% 5px 5px;
-			background:#fff;
-			position: absolute;
-			top:-50px;
-			left:50%;
-		}
-		.enemy0{
-			width:126px;
-			height:81px;
-			/* background:yellow; */
-			background:url('img/P.png') -377px 0 no-repeat;
-			position: absolute;
-			top:-70px;
-			left:20px;
-		}
-		.enemy1{
-			width:108px;
-			height:81px;
-			/* background:green; */
-			background:url('img/P.png') 0 0 no-repeat;
-			position: absolute;
-			top:-150px;
-			left:600px;
-		}
-		.enemy2{
-			width:126px;
-			height:87px;
-			/* background:blue; */
-			background:url('img/P.png') -242px 0 no-repeat;
-			position: absolute;
-			top:-400px;
-			left:80px;
-		}
-		.enemy3{
-			width:120px;
-			height:101px;
-			/* background:red; */
-			background:url('img/P.png') -114px 0 no-repeat;
-			position: absolute;
-			top:-60px;
-			left:510px;
-		}
-		.b2{
-			width:10px;
-			height:10px;
-			position: absolute;
-			border-radius:50%;
-			left:50%;
-			bottom: -50px;
-			background:#fff;
-		}
+<div class="row demolist">
 
-		.score{
-			display: none;
-			padding: 10px 15px;
-			font-size:30px;
-			font-weight:bold;
-			color:#99B2D6;
-			background:#031540;
-			border:5px solid #425579;
-			border-radius:0 50px 50px 0;
-			position: absolute;
-			top:20px;
-			left:20px;
-			z-index:1000000;
-
-			/* background:red; */
-		}
-
-		@keyframes movebg
-		{
-			from {background-position:0 10000%;} to {background-position:0 0%;}
-		}
-
-		@-moz-keyframes movebg /* Firefox */
-		{
-			from {background-position:0 10000%;} to {background-position:0 0;}
-		}
-
-		@-webkit-keyframes movebg /* Safari and Chrome */
-		{
-			from {background-position:0 10000%;} to {background-position:0 0%;}
-		}
-
-		@-o-keyframes movebg /* Opera */
-		{
-			from {background-position:0 10000%;} to {background-position:0 0;}
-		}
-		#start{
-			width: 100%;
-			height:100%;
-			background:rgba(0, 0, 0, 0.7);
-			position: absolute;
-			top:0;
-			left:0;
-		}
-		#startBtn{
-			background:blue;
-			color: #fff;
-			font-size:50px;
-			margin:100px 0 0 -115px;
-			padding: 10px 30px;
-			border:5px solid #fff;
-			border-radius:50px;
-			position: absolute;
-			top:50%;
-			left:50%;
-			outline:none;
-			cursor:pointer;
-		}
-		#name-over{
-			font-family:'微软雅黑',sans-serif;
-			width:100%;
-			padding: 120px 0 10px;
-			margin: -200px 0 0 0;
-			font-size:50px;
-			font-weight:bold;
-			text-align:center;
-			color:rgba(106,124,197,1);
-			line-height:70px;
-			background:rgba(106,124,197,0.5) url('img/P1.png') center 20px no-repeat;
-			position: absolute;
-			top:50%;
-			left:0;
-		}
-</style>
-
-</head>
-<body>
-
-<audio id="bgmuc" autoplay loop src="audio/bjyy.mp3"></audio>
-<audio id="fire" loop src="audio/9519.mp3"></audio>
-<audio id="boom" src="audio/baoza.mp3"></audio>
-<audio id="bigboom" src="audio/bigboom.mp3"></audio>
-<div class="layout" id="layout"></div>
-<div class="score">得分：
-	<span id="score">0</span>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/15.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">男神表白微博生成器</div>
+       <p class="text-center"> <a href="./info.asp?id=1" class="btn btn-default setfont" data-id="1" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/16.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">钻戒表白图片生成器</div>
+       <p class="text-center"> <a href="./info.asp?id=2" class="btn btn-default setfont" data-id="1" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/1.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">飞机横幅表白</div>
+       <p class="text-center"> <a href="./info.asp?id=3" class="btn btn-default setfont" data-id="1" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/2.jpg" >
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">商品房认购确认书</div>
+        <p class="text-center"><a href="./info.asp?id=4" class="btn btn-default setfont" data-id="2" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/3.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">提豪车生成器</div>
+       <p class="text-center"> <a href="./info.asp?id=5" class="btn btn-default setfont" data-id="3" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/4.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">楼宇表白生成器集合</div>
+       <p class="text-center"> <a href="./info.asp?id=16" class="btn btn-default setfont" data-id="4" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/5.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">飞行员证书生成器</div>
+        <p class="text-center"><a href="./info.asp?id=6" class="btn btn-default setfont" data-id="5" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/6.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">房产证生成器</div>
+       <p class="text-center"> <a href="./info.asp?id=7" class="btn btn-default setfont" data-id="6" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/7.jpg">
+      <div class="caption">
+	   <div class="panel-heading" style="
+    text-align: center;
+">豪车订单生成器</div>
+        <p class="text-center"><a href="./info.asp?id=8" class="btn btn-default setfont" data-id="7" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/8.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">保时捷918选购单</div>
+        <p class="text-center"><a href="./info.asp?id=9" class="btn btn-default setfont" data-id="8" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/9.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">搞笑奖状生成器</div>
+         <p class="text-center"><a href="./info.asp?id=10" class="btn btn-default setfont" data-id="9" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/10.jpg">
+      <div class="caption">
+	  	  <div class="panel-heading" style="
+    text-align: center;
+">房产证协议生成器</div>
+        <p class="text-center"><a href="./info.asp?id=11" class="btn btn-default setfont" data-id="10" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/11.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">挖掘机认购单</div>
+        <p class="text-center"><a href="./info.asp?id=12" class="btn btn-default setfont" data-id="11" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/12.jpg">
+      <div class="caption">
+	   <div class="panel-heading" style="
+    text-align: center;
+">表白图片生成器</div>
+        <p class="text-center"><a href="./info.asp?id=13" class="btn btn-default setfont" data-id="12" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/13.jpg">
+      <div class="caption">
+	  <div class="panel-heading" style="
+    text-align: center;
+">投资移民生成器</div>
+        <p class="text-center"><a href="./info.asp?id=14" class="btn btn-default setfont" data-id="13" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+    <div class="thumbnail">
+      <img src="./img/14.jpg">
+      <div class="caption">
+	  	  <div class="panel-heading" style="
+    text-align: center;
+">采矿许可证生成器</div>
+       <p class="text-center"><a href="./info.asp?id=15" class="btn btn-default setfont" data-id="14" role="button">立即制作</a></p>
+      </div>
+    </div>
+  </div>
+	</div>
+  </div>
 </div>
-<div id="start">
-	<div id="name-over"><i>飞机大战</i><p>0</p></div>
-	<input id="startBtn" type="button" name="mystartBtn" value="START">
-</div>
 
-<script src="js/main.js"></script>
 
-<div style="text-align:center;">
-<p>更多小游戏：<a href="http://mlv5.top/" target="_blank">MLV5</a></p>
-</div>
-</body>
-</html>
+<blockquote>
+<footer class="text-center">
+			﻿<P>大田装逼协会开发</P>
+<P></P>
+<P>©2015-2016 此内容系根据您的指令自动生成的结果，不代表本站赞成被生成网站的内容或立场</P>
+	</footer>
+	</blockquote>
+			</div>
+	</div>
+	
+</body></html>
